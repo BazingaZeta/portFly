@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import Card from "./Card";
 import { CompanyDetails } from "../constants/mock";
+import { ThemeContextProps } from "../App";
+import ThemeContext from "../context/ThemeContext";
 
 interface DetailsProps {
   details: CompanyDetails;
 }
 const Details: React.FC<DetailsProps> = ({ details }) => {
+  const { darkMode } = useContext(ThemeContext) as ThemeContextProps;
+
   const detailsList = {
     name: "Name",
     country: "Country",
@@ -21,7 +25,11 @@ const Details: React.FC<DetailsProps> = ({ details }) => {
   };
   return (
     <Card>
-      <ul className="w-full h-full flex flex-col justify-between divide-y-1">
+      <ul
+        className={`w-full h-full flex flex-col justify-between divide-y-1 ${
+          darkMode ? "divide-gray-800" : null
+        }`}
+      >
         {Object.keys(detailsList).map((item) => {
           return (
             <li
