@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import { mockSearchResults } from "../constants/mock";
 import {
   MagnifyingGlassCircleIcon,
   XCircleIcon,
@@ -7,10 +6,11 @@ import {
 import SearchResults from "./SearchResults";
 import { ThemeContextProps } from "../App";
 import ThemeContext from "../context/ThemeContext";
+import { SearchSymbols } from "../api/stock-api";
 
 const Search = () => {
   const [input, setInput] = useState("");
-  const [bestMatches, setBestMatches] = useState(mockSearchResults.result);
+  const [bestMatches, setBestMatches] = useState([]);
 
   const { darkMode } = useContext(ThemeContext) as ThemeContextProps;
 
@@ -19,8 +19,17 @@ const Search = () => {
     setBestMatches([]);
   };
 
-  const updateBestMatches = () => {
-    setBestMatches(mockSearchResults.result);
+  const updateBestMatches = async () => {
+    try {
+      if (input) {
+        const searchResults = await SearchSymbols(input);
+        const results = searchResults.result;
+        setBestMatches(results);
+      }
+    } catch (error) {
+      setBestMatches([]);
+      console.error(error);
+    }
   };
 
   return (

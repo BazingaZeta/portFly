@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import Dashboard from "./components/Dashboard";
 import ThemeContext from "./context/ThemeContext";
+import StockContext from "./context/StockContext";
 
 export interface ThemeContextProps {
   darkMode: boolean;
@@ -10,6 +11,7 @@ export interface ThemeContextProps {
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
+  const [stockSymbol, setStockSymbol] = useState("MSFT");
 
   const themeContextValue: ThemeContextProps = {
     darkMode,
@@ -18,7 +20,9 @@ function App() {
 
   return (
     <ThemeContext.Provider value={themeContextValue}>
-      <Dashboard />
+      <StockContext.Provider value={{ stockSymbol, setStockSymbol }}>
+        <Dashboard />
+      </StockContext.Provider>
     </ThemeContext.Provider>
   );
 }

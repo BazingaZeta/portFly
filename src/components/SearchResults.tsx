@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { StockResult } from "../constants/mock";
 import { ThemeContextProps } from "../App";
 import ThemeContext from "../context/ThemeContext";
+import StockContext, { StockContextProps } from "../context/StockContext";
 
 interface SearchResultsProps {
   results: StockResult[];
@@ -9,6 +10,7 @@ interface SearchResultsProps {
 
 const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
   const { darkMode } = useContext(ThemeContext) as ThemeContextProps;
+  const { setStockSymbol } = useContext(StockContext) as StockContextProps;
 
   return (
     <ul
@@ -25,6 +27,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
             className={`cursor-pointer p-4 m-2 flex items-center justify-between rounded-md  ${
               darkMode ? "hover:bg-indigo-600" : "hover:bg-indigo-200"
             }`}
+            onClick={() => setStockSymbol(item.symbol)}
           >
             <span>{item.symbol}</span>
             <span>{item.description}</span>

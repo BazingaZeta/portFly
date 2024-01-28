@@ -74,6 +74,17 @@ export const mockStockQuote = {
   t: 1582641000,
 };
 
+export interface StockQuote {
+  c: number; // Closing price
+  h: number; // High price
+  l: number; // Low price
+  o: number; // Opening price
+  pc: number; // Previous close
+  t: number; // Timestamp
+  d: number;
+  dp: number;
+}
+
 export interface HistoricalData {
   c: number[]; // closing prices
   h: number[]; // high prices
