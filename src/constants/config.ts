@@ -1,7 +1,7 @@
-type ChartFilter = "1D" | "1W" | "1M" | "1Y";
+export type ChartFilters = "1D" | "1W" | "1M" | "1Y";
 
 export const chartConfig: Record<
-  ChartFilter,
+  ChartFilters,
   {
     days: number;
     weeks: number;

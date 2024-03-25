@@ -4,7 +4,6 @@ import Header from "./Header";
 import Details from "./Details";
 import Overview from "./Overview";
 import Chart from "./Chart";
-import _ from "lodash";
 import ThemeContext from "../context/ThemeContext";
 import { ThemeContextProps } from "../App";
 import StockContext, { StockContextProps } from "../context/StockContext";

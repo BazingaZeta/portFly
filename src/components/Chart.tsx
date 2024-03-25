@@ -14,38 +14,40 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { chartConfig } from "../constants/config";
-import { ChartFilter } from "./ChartFilter";
+import { ChartFilters, chartConfig } from "../constants/config";
 import { ThemeContextProps } from "../App";
 import ThemeContext from "../context/ThemeContext";
 import { fetchHistoricalData } from "../api/stock-api";
 import StockContext, { StockContextProps } from "../context/StockContext";
+import { ChartFilter } from "./ChartFilter";
+import _ from "lodash";
 
 interface ChartProps {}
 
 const Chart: React.FC<ChartProps> = () => {
-  const [data, setData] = useState<HistoricalData | []>(mockHistoricalData);
+  const [data, setData] = useState<any | []>(mockHistoricalData);
   const [filter, setFilter] = useState("1D");
 
   const { darkMode } = useContext(ThemeContext) as ThemeContextProps;
   const { stockSymbol } = useContext(StockContext) as StockContextProps;
 
   const formatData = (data: HistoricalData) => {
-    return data.c.map((item, index) => {
-      return {
-        value: item.toFixed(2),
-        date: convertUnixTimestampToDate(data.t[index]),
-      };
-    });
+    return (
+      !_.isUndefined(data) &&
+      data.c.map((item, index) => {
+        return {
+          value: item.toFixed(2),
+          date: convertUnixTimestampToDate(data.t[index]),
+        };
+      })
+    );
   };
 
   useEffect(() => {
     const getDateRange = () => {
       const { days, weeks, months, years } =
-        chartConfig[filter as keyof typeof chartConfig];
-
+        chartConfig[filter as ChartFilters];
       const endDate = new Date();
-
       const startDate = createDate({
         date: endDate,
         days: -days,
@@ -54,35 +56,29 @@ const Chart: React.FC<ChartProps> = () => {
         years: -years,
       });
 
-      const startTimeStampUnix = convertDateToUnixTimestamp(startDate);
-      const endTimeStampUnix = convertDateToUnixTimestamp(endDate);
+      const startTimestampUnix = convertDateToUnixTimestamp(startDate);
+      const endTimestampUnix = convertDateToUnixTimestamp(endDate);
 
-      return {
-        startTimeStampUnix,
-        endTimeStampUnix,
-      };
+      return { startTimestampUnix, endTimestampUnix };
     };
     const updateChartData = async () => {
       try {
-        const { startTimeStampUnix, endTimeStampUnix } = getDateRange();
-        const resolution =
-          chartConfig[filter as keyof typeof chartConfig].resolution;
-
+        const { startTimestampUnix, endTimestampUnix } = getDateRange();
+        const resolution = chartConfig[filter as ChartFilters].resolution;
         const result = await fetchHistoricalData(
           stockSymbol,
           resolution,
-          startTimeStampUnix,
-          endTimeStampUnix
+          startTimestampUnix,
+          endTimestampUnix
         );
-        //console.log(result);
-        //setData(formatData(result));
+
+        setData(formatData(result));
       } catch (error) {
         setData([]);
         console.log(error);
       }
     };
-    // Check FinnHub premium/free options, because with no data we have a problem.
-    //updateChartData();
+    updateChartData();
   }, [stockSymbol, filter]);
 
   return (
@@ -101,7 +97,7 @@ const Chart: React.FC<ChartProps> = () => {
         ))}
       </ul>
       <ResponsiveContainer>
-        <AreaChart data={formatData(data as HistoricalData)}>
+        <AreaChart data={data}>
           <defs>
             <linearGradient id="chartColor" x1="0" y1="0" x2="0" y2="1">
               <stop
