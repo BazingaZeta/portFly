@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import Dashboard from "./components/Dashboard";
 import ThemeContext from "./context/ThemeContext";
@@ -17,6 +17,13 @@ function App() {
     darkMode,
     setDarkMode,
   };
+
+  useEffect(() => {
+    fetch("http://localhost:5000/")
+      .then((response) => response.text())
+      .then((data) => console.log("Simple backend Reply", data))
+      .catch((error) => console.error("Error:", error));
+  }, []);
 
   return (
     <ThemeContext.Provider value={themeContextValue}>
